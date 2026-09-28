@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mes droits, mes démarches</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;700&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5F7;--card:#fff;--ink:#16202E;--mute:#5B6675;--line:#D5DBE2;--acc:#1D5C63;--accbg:#E1EFF0;--warn:#9A3B14;--warnbg:#FBEBE3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F151C;--card:#18212B;--ink:#E8EDF2;--mute:#9AA6B4;--line:#2B3644;--acc:#6CC3CB;--accbg:#183038;--warn:#F0A27F;--warnbg:#3A2419}}
+:root[data-theme="dark"]{--bg:#0F151C;--card:#18212B;--ink:#E8EDF2;--mute:#9AA6B4;--line:#2B3644;--acc:#6CC3CB;--accbg:#183038;--warn:#F0A27F;--warnbg:#3A2419}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Public Sans",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font:700 2rem/1.15 Newsreader,Georgia,serif;margin:8px 0 6px}
+h2{font:700 1.35rem/1.2 Newsreader,Georgia,serif;margin:36px 0 12px}
+.lead{color:var(--mute);margin:0 0 18px}
+.notice{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:12px 14px;font-size:.9rem}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+textarea{min-height:90px;resize:vertical}
+label{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.88rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--card)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:10px 0}
+summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+.body{padding:0 16px 16px;border-top:1px solid var(--line)}
+.body h3{font-size:.95rem;margin:16px 0 4px;color:var(--acc)}
+.body ol,.body ul{margin:4px 0;padding-left:20px}
+.body li{margin:4px 0}
+.avocat{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:10px 12px;margin-top:14px;font-size:.92rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 16px 16px}
+button.main{margin-top:14px;background:var(--acc);color:var(--card);border:0;border-radius:8px;padding:11px 18px;font:600 1rem "Public Sans",sans-serif;cursor:pointer}
+button.alt{background:transparent;color:var(--acc);border:1px solid var(--acc);margin-left:8px}
+pre{white-space:pre-wrap;word-wrap:break-word;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;font:.9rem/1.5 "Public Sans",sans-serif;margin-top:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.contacts li{margin:6px 0}
+.empty{color:var(--mute);text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<main>
+<h1>Mes droits, mes démarches</h1>
+<p class="lead">Un guide pratique pour comprendre où vous en êtes, quoi faire, dans quels délais, et qui contacter. Fonctionne hors ligne, sans compte ni IA.</p>
+<div class="notice">Informations générales sur le droit français, à jour au mieux de nos connaissances. Ce n'est pas un conseil juridique personnalisé : les lois changent et chaque dossier a ses particularités. Vérifiez sur service-public.fr avant d'agir.</div>
+
+<h2>Ma situation</h2>
+<input id="q" type="search" placeholder="Ex. caution, licenciement, amende, voisin, remboursement…" aria-label="Rechercher une situation">
+<div class="chips" id="chips"></div>
+<div id="list"></div>
+
+<h2>Rédiger un courrier</h2>
+<div class="panel">
+<label for="tpl">Type de courrier</label>
+<select id="tpl">
+<option value="mise">Mise en demeure</option>
+<option value="rec">Réclamation / contestation</option>
+<option value="resil">Résiliation / préavis</option>
+<option value="remb">Demande de remboursement</option>
+</select>
+<div class="row">
+<div><label for="nom">Votre nom</label><input id="nom" autocomplete="name"></div>
+<div><label for="ville">Ville</label><input id="ville"></div>
+</div>
+<label for="adr">Votre adresse</label><input id="adr" autocomplete="street-address">
+<div class="row">
+<div><label for="dest">Destinataire</label><input id="dest" placeholder="Nom de l'entreprise ou de la personne"></div>
+<div><label for="adrd">Adresse du destinataire</label><input id="adrd"></div>
+</div>
+<label for="faits">Les faits (dates, montants, références)</label>
+<textarea id="faits" placeholder="Ex. Le 12/09/2026, j'ai commandé un lave-linge (n° 4587) livré défectueux."></textarea>
+<label for="dem">Ce que vous demandez</label>
+<input id="dem" placeholder="Ex. me rembourser 450 €">
+<label for="delai">Délai accordé (jours)</label><input id="delai" type="number" value="8" min="1">
+<button class="main" id="gen">Générer le courrier</button>
+<div id="out" hidden>
+<pre id="txt"></pre>
+<button class="main" id="copy">Copier</button><button class="main alt" id="print">Imprimer</button>
+<p class="lead" style="margin-top:10px;font-size:.88rem">Envoyez-le en lettre recommandée avec accusé de réception et gardez une copie et la preuve d'envoi.</p>
+</div>
+</div>
+
+<h2>Numéros et sites utiles</h2>
+<ul class="contacts">
+<li><b>service-public.fr</b> : fiches officielles sur presque toutes les démarches.</li>
+<li><b>justice.fr</b> : trouver un Point-Justice ou une consultation juridique gratuite près de chez vous.</li>
+<li><b>Défenseur des droits</b> : 09 69 39 00 00, contre les discriminations et les litiges avec un service public.</li>
+<li><b>ADIL</b> : conseil gratuit sur le logement.</li>
+<li><b>Conciliateur de justice</b> : gratuit, via la mairie ou justice.fr, pour les petits litiges.</li>
+<li><b>Aide juridictionnelle</b> : prise en charge des frais d'avocat selon vos ressources.</li>
+<li><b>Protection juridique</b> : vérifiez votre assurance habitation ou auto, elle est souvent incluse.</li>
+</ul>
+
+<h2>Quand prendre un avocat</h2>
+<div class="panel"><ul>
+<li>Garde à vue ou affaire pénale : demandez un avocat tout de suite, il peut être commis d'office et gratuit.</li>
+<li>Divorce avec désaccord, litige de plus de 10 000 € devant le tribunal judiciaire : l'avocat est obligatoire.</li>
+<li>Dommage corporel grave, licenciement à fort enjeu, succession conflictuelle, litige avec beaucoup d'argent en jeu.</li>
+<li>Vous avez reçu une assignation ou une convocation en justice.</li>
+</ul></div>
+</main>
+<script>
+const D=[
+{t:"Logement : bail, caution, préavis",g:"Logement",k:"loyer bail dépôt garantie caution préavis propriétaire locataire état des lieux",
+r:"Litige avec un bailleur ou un locataire.",
+e:["Relisez le bail et les états des lieux d'entrée et de sortie.","Écrivez au propriétaire ou à l'agence en recommandé, en décrivant précisément le problème.","Sans réponse, saisissez la commission départementale de conciliation (gratuit) ou contactez l'ADIL.","En dernier recours, le juge des contentieux de la protection du tribunal judiciaire."],
+d:["Préavis du locataire : 3 mois, réduit à 1 mois en zone tendue, si logement meublé ou dans certains cas (mutation, perte d'emploi).","Dépôt de garantie : à rendre sous 1 mois si l'état des lieux est conforme, 2 mois sinon. Un retard donne droit à 10 % du loyer mensuel par mois de retard.","Le préavis se donne par recommandé, remise en main propre contre récépissé ou commissaire de justice."],
+a:"Expulsion, impayés importants ou logement insalubre : demandez conseil à l'ADIL et signalez l'insalubrité à la mairie ou à l'ARS."},
+{t:"Travail : licenciement, démission, salaire",g:"Travail",k:"licenciement rupture conventionnelle prud'hommes salaire heures supplémentaires démission employeur harcèlement",
+r:"Problème avec un employeur.",
+e:["Rassemblez preuves : contrat, bulletins de paie, mails, témoignages.","Demandez par écrit les motifs ou régularisation à l'employeur.","Contactez l'inspection du travail, un syndicat ou un défenseur syndical (gratuit).","Saisissez le conseil de prud'hommes si le problème persiste."],
+d:["Contester un licenciement devant les prud'hommes : 12 mois à partir de la notification.","Rupture conventionnelle : 15 jours calendaires pour se rétracter après signature.","Salaires impayés ou heures supplémentaires : 3 ans de prescription."],
+a:"Harcèlement, discrimination, licenciement pour faute grave : un avocat en droit du travail ou un syndicat est très utile."},
+{t:"Achat : produit défectueux, remboursement",g:"Consommation",k:"achat garantie remboursement produit défectueux internet commande rétractation vendeur livraison",
+r:"Un vendeur ne répond pas ou refuse de rembourser.",
+e:["Écrivez d'abord au service client, puis en recommandé avec facture et photos.","Invoquez la garantie légale de conformité : réparation, remplacement, remboursement.","Saisissez le médiateur de la consommation (gratuit, indiqué dans les CGV).","Signalez sur SignalConso ; pour les petits litiges, conciliateur puis tribunal."],
+d:["Achat à distance : 14 jours pour se rétracter, sans motif.","Garantie légale de conformité : 2 ans pour du neuf, 1 an pour de l'occasion chez un professionnel.","Livraison en retard : mise en demeure de livrer sous un délai raisonnable, puis résolution."],
+a:"Rarement nécessaire sous 5 000 € : la médiation suffit souvent."},
+{t:"Amende, PV, contravention",g:"Amende",k:"amende contravention pv radar points permis stationnement contestation antai",
+r:"Vous avez reçu un avis de contravention.",
+e:["Lisez l'avis : le délai pour payer ou contester y est indiqué.","Payer vaut reconnaissance de l'infraction (et retrait de points le cas échéant).","Pour contester : passez par le site indiqué sur l'avis (antai.gouv.fr pour les radars), avec vos justificatifs.","Désignez le conducteur si vous n'étiez pas au volant."],
+d:["Contestation : en général 45 jours à compter de l'envoi de l'avis (vérifiez celui de votre avis).","Tarif minoré si paiement dans le délai indiqué (souvent 15 jours, 30 en ligne)."],
+a:"Retrait du permis, délit routier (alcool, grand excès de vitesse) : consultez un avocat."},
+{t:"Voisinage : bruit, nuisances, mur, arbre",g:"Voisinage",k:"voisin bruit tapage nuisances mitoyen arbre haie odeur conflit",
+r:"Un voisin vous gêne.",
+e:["Dialoguez calmement, puis envoyez un courrier simple.","Notez les nuisances (dates, heures) et recueillez des témoignages.","Faites appel à un conciliateur de justice (gratuit) ou à un médiateur.","Tapage nocturne : appelez la police ; sinon plainte ou action pour trouble anormal de voisinage."],
+d:["Le tapage nocturne est sanctionné (22h à 7h), mais un bruit répété de jour peut aussi être puni.","Avant de saisir le tribunal pour un petit litige, une tentative amiable est obligatoire."],
+a:"Conflit sur la propriété (bornage, servitude) : un avocat ou un géomètre expert est recommandé."},
+{t:"Dettes, huissier, surendettement",g:"Argent",k:"dette huissier commissaire justice saisie surendettement banque crédit impayé recouvrement",
+r:"Vous recevez des relances ou une saisie.",
+e:["Ne l'ignorez pas : demandez le détail (décompte) de la dette.","Vérifiez qu'elle est bien due et non prescrite.","Négociez un échéancier par écrit.","Si vous ne pouvez plus payer : dossier à la commission de surendettement de la Banque de France (gratuit)."],
+d:["Contester une saisie devant le juge de l'exécution : généralement 1 mois.","Une somme correspondant au solde bancaire insaisissable reste disponible sur votre compte."],
+a:"Saisie immobilière, procès en cours ou dette professionnelle : avocat conseillé."},
+{t:"Accident, sinistre, assurance",g:"Assurance",k:"accident assurance sinistre constat amiable voiture dégât des eaux vol indemnisation",
+r:"Accident de voiture, dégât des eaux, vol.",
+e:["Remplissez un constat amiable dès que possible et prenez des photos.","Déclarez le sinistre à votre assureur par écrit.","Gardez factures, devis et échanges.","Si le refus est contesté : réclamation, puis médiateur de l'assurance."],
+d:["Déclaration du sinistre : 5 jours ouvrés (2 jours pour un vol).","Réclamation à l'assureur puis médiation : gratuite."],
+a:"Blessures graves ou décès : un avocat spécialisé dommage corporel fait une vraie différence."},
+{t:"Famille : divorce, pension, garde",g:"Famille",k:"divorce pension alimentaire garde enfants séparation succession héritage famille",
+r:"Séparation, enfants, héritage.",
+e:["Informez-vous auprès d'un Point-Justice ou d'un notaire (première consultation souvent gratuite).","Privilégiez l'accord amiable : la médiation familiale est encouragée.","Formalisez l'accord (convention, notaire ou juge aux affaires familiales).","Pension impayée : recours auprès de l'ARIPA pour l'aide au recouvrement."],
+d:["Divorce par consentement mutuel : chaque époux doit être assisté par un avocat.","Succession : délai de 6 mois pour le dépôt de la déclaration de succession en cas de décès en France."],
+a:"Divorce contesté, violences, enfants : ici l'avocat est très souvent obligatoire ou indispensable."}
+];
+const T={
+mise:(d)=>`Objet : Mise en demeure\n\nMadame, Monsieur,\n\n${d.faits}\n\nEn conséquence, je vous mets en demeure de ${d.dem} dans un délai de ${d.delai} jours à compter de la réception de la présente.\n\nÀ défaut, je me réserverai le droit de saisir les juridictions compétentes, sans autre avis.`,
+rec:(d)=>`Objet : Réclamation\n\nMadame, Monsieur,\n\nJe me permets de contester la situation suivante :\n\n${d.faits}\n\nJe vous demande de ${d.dem}. Je vous remercie de me répondre par écrit sous ${d.delai} jours. À défaut, je saisirai le médiateur compétent.`,
+resil:(d)=>`Objet : Résiliation\n\nMadame, Monsieur,\n\nPar la présente, je vous informe de ma décision de résilier : ${d.faits}\n\nJe vous demande de ${d.dem}. Je vous remercie de me confirmer la prise en compte de cette résiliation sous ${d.delai} jours.`,
+remb:(d)=>`Objet : Demande de remboursement\n\nMadame, Monsieur,\n\n${d.faits}\n\nConformément à mes droits, je sollicite ${d.dem}. Je vous prie de procéder au remboursement sous ${d.delai} jours, par le même moyen de paiement que celui utilisé.`
+};
+const $=s=>document.querySelector(s);
+let G="Tout",list=$("#list"),chips=$("#chips");
+const groups=["Tout",...new Set(D.map(x=>x.g))];
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function ul(a,o){return "<"+o+">"+a.map(x=>"<li>"+esc(x)+"</li>").join("")+"</"+o+">"}
+function render(){
+  const q=$("#q").value.toLowerCase().trim();
+  const r=D.filter(x=>(G==="Tout"||x.g===G)&&(!q||(x.t+" "+x.k+" "+x.r).toLowerCase().includes(q)));
+  list.innerHTML=r.length?r.map(x=>`<details><summary>${esc(x.t)}</summary><div class="body"><p>${esc(x.r)}</p><h3>Les étapes</h3>${ul(x.e,"ol")}<h3>Délais à connaître</h3>${ul(x.d,"ul")}<div class="avocat"><b>Avocat :</b> ${esc(x.a)}</div></div></details>`).join(""):'<div class="empty">Aucun résultat. Essayez un autre mot.</div>';
+  chips.innerHTML=groups.map(g=>`<button class="chip" aria-pressed="${g===G}" data-g="${esc(g)}">${esc(g)}</button>`).join("");
+}
+chips.onclick=e=>{const b=e.target.closest(".chip");if(b){G=b.dataset.g;render()}};
+$("#q").oninput=render;
+$("#gen").onclick=()=>{
+  const d={faits:$("#faits").value||"[décrivez les faits]",dem:$("#dem").value||"[votre demande]",delai:$("#delai").value||"8"};
+  const today=new Date().toLocaleDateString("fr-FR");
+  const t=`${$("#nom").value||"[Votre nom]"}\n${$("#adr").value||"[Votre adresse]"}\n\n${$("#dest").value||"[Destinataire]"}\n${$("#adrd").value||"[Adresse du destinataire]"}\n\nFait à ${$("#ville").value||"[Ville]"}, le ${today}\n\nLettre recommandée avec accusé de réception\n\n${T[$("#tpl").value](d)}\n\nDans l'attente de votre réponse, je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.\n\n${$("#nom").value||"[Votre nom]"}`;
+  $("#txt").textContent=t;$("#out").hidden=false;$("#out").scrollIntoView({behavior:"smooth"});
+};
+$("#copy").onclick=async()=>{try{await navigator.clipboard.writeText($("#txt").textContent);$("#copy").textContent="Copié"}catch(e){$("#copy").textContent="Sélectionnez le texte à la main"}setTimeout(()=>$("#copy").textContent="Copier",1800)};
+$("#print").onclick=()=>window.print();
+render();
+</script>
+</body>
+</html>
